@@ -12,12 +12,20 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $books = Book::all();
+    public function index(Request $request)
+{
+    $status = $request->query('status');
 
-    return view('books.index', compact('books'));
+    $query = Book::query();
+
+    if (in_array($status, ['to-read', 'reading', 'finished'], true)) {
+        $query->where('status', $status);
     }
+
+    $books = $query->get();
+
+    return view('books.index', compact('books', 'status'));
+}
 
     /**
      * Show the form for creating a new resource.
